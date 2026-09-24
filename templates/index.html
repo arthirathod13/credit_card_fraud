@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Credit Card Fraud Detection</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/style.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="main-container">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <h1>
+                Credit Card Fraud Detection
+            </h1>
+
+            <p>
+                AI-powered transaction fraud analysis
+            </p>
+
+        </div>
+
+
+        <!-- FORM -->
+
+        <div class="card">
+
+            <h2>
+                Transaction Details
+            </h2>
+
+
+            <div class="form-grid">
+
+
+                <!-- AMOUNT -->
+
+                <div class="form-group">
+
+                    <label for="amount">
+                        Transaction Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="amount"
+                        placeholder="Example: 250.50"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- TRANSACTION HOUR -->
+
+                <div class="form-group">
+
+                    <label for="transaction_hour">
+                        Transaction Hour
+                    </label>
+
+                    <input
+                        type="number"
+                        id="transaction_hour"
+                        placeholder="0 - 23"
+                        min="0"
+                        max="23"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- MERCHANT CATEGORY -->
+
+                <div class="form-group">
+
+                    <label for="merchant_category">
+                        Merchant Category
+                    </label>
+
+                    <input
+                        type="text"
+                        id="merchant_category"
+                        placeholder="Example: grocery"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- FOREIGN TRANSACTION -->
+
+                <div class="form-group">
+
+                    <label for="foreign_transaction">
+                        Foreign Transaction
+                    </label>
+
+                    <select id="foreign_transaction">
+
+                        <option value="0">
+                            No
+                        </option>
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- LOCATION MISMATCH -->
+
+                <div class="form-group">
+
+                    <label for="location_mismatch">
+                        Location Mismatch
+                    </label>
+
+                    <select id="location_mismatch">
+
+                        <option value="0">
+                            No
+                        </option>
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- DEVICE TRUST SCORE -->
+
+                <div class="form-group">
+
+                    <label for="device_trust_score">
+                        Device Trust Score
+                    </label>
+
+                    <input
+                        type="number"
+                        id="device_trust_score"
+                        placeholder="Example: 80"
+                        min="0"
+                        max="100"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- VELOCITY -->
+
+                <div class="form-group">
+
+                    <label for="velocity_last_24h">
+                        Transactions in Last 24 Hours
+                    </label>
+
+                    <input
+                        type="number"
+                        id="velocity_last_24h"
+                        placeholder="Example: 5"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- AGE -->
+
+                <div class="form-group">
+
+                    <label for="cardholder_age">
+                        Cardholder Age
+                    </label>
+
+                    <input
+                        type="number"
+                        id="cardholder_age"
+                        placeholder="18 - 69"
+                        min="18"
+                        max="100"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- THRESHOLD -->
+
+            <div class="threshold-section">
+
+                <h2>
+                    Classification Threshold
+                </h2>
+
+                <p>
+                    Adjust the threshold to control how easily a
+                    transaction is classified as fraud.
+                </p>
+
+
+                <div class="threshold-value">
+
+                    <span>
+                        Threshold:
+                    </span>
+
+                    <strong id="threshold_value">
+                        50%
+                    </strong>
+
+                </div>
+
+
+                <input
+                    type="range"
+                    id="threshold"
+                    min="10"
+                    max="90"
+                    value="50"
+                    step="1"
+                >
+
+                <div class="threshold-labels">
+
+                    <span>10%</span>
+
+                    <span>50%</span>
+
+                    <span>90%</span>
+
+                </div>
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+                id="predict_button"
+                onclick="predictFraud()"
+            >
+                Predict Transaction
+            </button>
+
+
+            <!-- LOADING -->
+
+            <div
+                id="loading"
+                class="loading hidden"
+            >
+                Analyzing transaction...
+            </div>
+
+
+            <!-- RESULT -->
+
+            <div
+                id="result"
+                class="result hidden"
+            >
+
+                <h2>
+                    Prediction Result
+                </h2>
+
+
+                <div class="result-box">
+
+                    <p>
+                        Fraud Probability
+                    </p>
+
+                    <h3 id="fraud_probability">
+                        0%
+                    </h3>
+
+                </div>
+
+
+                <div class="result-box">
+
+                    <p>
+                        Classification
+                    </p>
+
+                    <h3 id="prediction_result">
+                        -
+                    </h3>
+
+                </div>
+
+
+                <div class="result-box">
+
+                    <p>
+                        Threshold Used
+                    </p>
+
+                    <h3 id="threshold_result">
+                        50%
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                Credit Card Fraud Detection |
+                FastAPI + Random Forest
+            </p>
+
+        </footer>
+
+    </div>
+
+
+    <script src="/static/scripts.js"></script>
+
+</body>
+
+</html>
